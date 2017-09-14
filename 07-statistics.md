@@ -99,16 +99,9 @@ cohens_d_babies = cohens_d(first_babies.totalwgt_lb, other_babies.totalwgt_lb)
 print("First babies weigh {0!s} lbs on average.".format(mean_firsts))
 print("Other babies weigh {0!s} lbs on average.".format(mean_others))
 print("The Cohen's d effect size is {0:.3f} standard deviations.".format(cohens_d_babies))
-
-"""
-Both the Cohen's d effect size and the difference between mean pregnancy length
-for firsts babies and other babies are very small.  This suggests that there is
-not a strong difference between the expected weight of a first baby,
-versus that of a subsequent baby.  The Cohen's d measure tells us that the mean
-birthweight for first babies is only a small fraction of a standard
-deviation away from the mean pregnancy length for other babies.
-"""
 ```
+
+Both the Cohen's d effect size and the difference between mean pregnancy length for firsts babies and other babies are very small.  This suggests that there is not a strong difference between the expected weight of a first baby, versus that of a subsequent baby.  The Cohen's d measure tells us that the mean birthweight for first babies is only a small fraction of a standard deviation away from the mean pregnancy length for other babies.
 
 
 
