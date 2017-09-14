@@ -69,6 +69,49 @@ Cohen's D is an example of effect size.  Other examples of effect size are:  cor
 
 You will see effect size again and again in results of algorithms that are run in data science.  For instance, in the bootcamp, when you run a regression analysis, you will recognize the t-statistic as an example of effect size.
 
+```
+import nsfg
+
+def cohens_d(group1, group2):
+	"""This function calculates Cohen's d from two input Series."""
+	mean1 = group1.mean()
+	mean2 = group2.mean()
+	
+	n1 = len(group1)
+	n2 = len(group2)
+	
+	var1 = group1.var()
+	var2 = group2.var()
+	pooled_var = (n1 * var1 + n2 * var2) / (n1 + n2)
+
+	d = (mean1 - mean2) / (pooled_var ** (1/2))
+	return d
+
+df = nsfg.ReadFemPreg()
+live = df[df.outcome == 1]
+first_babies = live[live.birthord == 1]
+other_babies = live[live.birthord != 1]
+
+mean_firsts = first_babies.totalwgt_lb.mean()
+mean_others = other_babies.totalwgt_lb.mean()	
+cohens_d_babies = cohens_d(first_babies.totalwgt_lb, other_babies.totalwgt_lb)
+
+print("First babies weigh {0!s} lbs on average.".format(mean_firsts))
+print("Other babies weigh {0!s} lbs on average.".format(mean_others))
+print("The Cohen's d effect size is {0:.3f} standard deviations.".format(cohens_d_babies))
+
+"""
+Both the Cohen's d effect size and the difference between mean pregnancy length
+for firsts babies and other babies are very small.  This suggests that there is
+not a strong difference between the expected weight of a first baby,
+versus that of a subsequent baby.  The Cohen's d measure tells us that the mean
+birthweight for first babies is only a small fraction of a standard
+deviation away from the mean pregnancy length for other babies.
+"""
+```
+
+
+
 ### Q2. [Think Stats Chapter 3 Exercise 1](statistics/3-1-actual_biased.md) (actual vs. biased)
 This problem presents a robust example of actual vs biased data.  As a data scientist, it will be important to examine not only the data that is available, but also the data that may be missing but highly relevant.  You will see how the absence of this relevant data will bias a dataset, its distribution, and ultimately, its statistical interpretation.
 
