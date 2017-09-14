@@ -391,11 +391,11 @@ print("Pearson's skewness of sample: {0:.3f}.".format(pearsons_skewness(sample))
 print("Proportion of sample less than the mean: {0:.3f}.".format(cdf(sample, sample.mean())))
 ```
 
-*Mean log income: 4.658.
+>> Mean log income: 4.658.
 Median log income: 4.709.
 Skewness of sample: -0.641.
 Pearson's skewness of sample: -0.338.
-Proportion of sample less than the mean: 0.451.*
+Proportion of sample less than the mean: 0.451.
 
 ### Q10. [Think Stats Chapter 8 Exercise 3](statistics/8-3-scoring.md) (scoring)
 
