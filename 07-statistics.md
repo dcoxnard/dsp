@@ -154,10 +154,51 @@ But if we surveyed the kids, they would report a mean of 2.404.*
 ### Q3. [Think Stats Chapter 4 Exercise 2](statistics/4-2-random_dist.md) (random distribution)  
 This questions asks you to examine the function that produces random numbers.  Is it really random?  A good way to test that is to examine the pmf and cdf of the list of random numbers and visualize the distribution.  If you're not sure what pmf is, read more about it in Chapter 3.  
 
+```
+import random
+import thinkstats2
+import thinkplot
+
+nums = []
+for i in range(1000):
+	nums.append(random.random())
+
+random_pmf = thinkstats2.Pmf(nums)
+random_cdf = thinkstats2.Cdf(nums)
+
+thinkplot.PrePlot(2, 2)
+thinkplot.Pmf(random_pmf)
+thinkplot.PrePlot(2)
+thinkplot.SubPlot(2)
+thinkplot.Cdf(random_cdf)
+thinkplot.Show()
+```
+
+*The distribution appears to be uniform.  The PMF of the distribution looks to be a "flat" bar with no peaks or troughs, meaning that all values between 0 and 1 are equally likely to be sampled.  Furthermore, the plot of the CDF is an almost straight diagonal line from the bottom of the distribution to the top.  Because no area of the CDF plot is steeper or flatter than any other area, that means that the probability of sampling any given value is about the same as the probability of sampling any other value; hence, the distribution is uniform, and the numbers are likely to be randomly chosen.*
+
+
 ### Q4. [Think Stats Chapter 5 Exercise 1](statistics/5-1-blue_men.md) (normal distribution of blue men)
 This is a classic example of hypothesis testing using the normal distribution.  The effect size used here is the Z-statistic. 
 
+```
+from scipy.stats import norm
 
+mean = 178
+std = 7.7
+
+males = norm(loc=mean, scale=std)
+
+# The upper and lower bounds are the conversions from ft & in to cm.
+lower_bound = 177.8
+upper_bound = 185.4
+
+perc_in_range = (males.cdf(upper_bound) - males.cdf(lower_bound)) * 100
+
+print("{0:.1f}% of the US male population is between 5'10\" and 6'1\",\
+ and therefore eligible to join the\
+ Blue Man Group.".format(perc_in_range))
+```
+*34.2% of the US male population is between 5'10" and 6'1", and therefore eligible to join the Blue Man Group.*
 
 ### Q5. Bayesian (Elvis Presley twin) 
 
@@ -183,12 +224,301 @@ The following exercises are optional, but we highly encourage you to complete th
 ### Q7. [Think Stats Chapter 7 Exercise 1](statistics/7-1-weight_vs_age.md) (correlation of weight vs. age)
 In this exercise, you will compute the effect size of correlation.  Correlation measures the relationship of two variables, and data science is about exploring relationships in data.    
 
+```
+import matplotlib.pyplot as plt
+import nsfg
+import numpy as np
+from thinkstats2 import Cdf
+
+df = nsfg.ReadFemPreg()
+live = df[df.outcome == 1]
+
+
+# Scatterplot of mother's age vs. birthweight.
+plt.scatter(live.totalwgt_lb, live.agepreg, alpha=0.1)
+plt.title("Birth Weight vs. Mother's Age at Birth")
+plt.xlabel("Birth Weight")
+plt.ylabel("Mother's Age at Birth")
+plt.show()
+
+# Plot percentiles of birth weight vs mother's age.
+bins = np.arange(16, 41, 1)
+indices = np.digitize(live.agepreg, bins)
+groups = live.groupby(indices)
+ages = [group.agepreg.mean() for i, group in groups]
+cdfs = [Cdf(group.totalwgt_lb) for i, group in groups]
+for percent in [75, 50, 25]:
+	birthwgts = [cdf.Percentile(percent) for cdf in cdfs]
+	label = '{0:d}th'.format(percent)
+	plt.plot(ages, birthwgts, label=label)
+plt.xlabel("Mother's age")
+plt.ylabel("Birth weight")
+plt.title("Percentile ranks for mother's age vs. birth weight")
+plt.show()
+
+
+# Compute both correlation coefficients.
+def pearsons_corr(x, y):
+	"""This function computes Pearson's correlation coefficient."""
+	x_dev = x - x.mean()
+	y_dev = y - y.mean()
+	x_std = x.std()
+	y_std = y.std()
+	cov_xy = (x_dev * y_dev).sum() / len(x_dev)
+	return cov_xy / (x_std * y_std)
+
+def spearmans_corr(x, y):
+	"""This function computes Spearman's correlation coefficient."""
+	x_ranks = x.rank()
+	y_ranks = y.rank()
+	x_dev = x_ranks - x_ranks.mean()
+	y_dev = y_ranks - y_ranks.mean()
+	x_std = x_ranks.std()
+	y_std = y_ranks.std()
+	cov_xy = (x_dev * y_dev).sum() / len(x_dev)
+	return cov_xy / (x_std * y_std)
+
+pearsons_corr = pearsons_corr(live.totalwgt_lb, live.agepreg)
+print("Pearson's Correlation Coefficient: {0:.3f}".format(pearsons_corr))
+
+spearmans_corr = spearmans_corr(live.totalwgt_lb, live.agepreg)
+print("Spearman's Correlation Coefficient: {0:.3f}".format(spearmans_corr))
+```
+
+*Both correlation coefficients are very low.  This is evidence that the mother's age at birth and birthweight are not meaningfully related.  In other words, knowing information about one variable does not give much, if any, predictive power on the other variable.  Because both correlation coefficients are below 0.1, it is safe to conclude that each variable explains less than a tenth of the variation in the other variable.*
+
 ### Q8. [Think Stats Chapter 8 Exercise 2](statistics/8-2-sampling_dist.md) (sampling distribution)
 In the theoretical world, all data related to an experiment or a scientific problem would be available.  In the real world, some subset of that data is available.  This exercise asks you to take samples from an exponential distribution and examine how the standard error and confidence intervals vary with the sample size.
+```
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+from scipy import stats
+
+def simulate_sample(lam=2, n=10, m=1000):
+	"""Simulate sampling from an exponential distribution."""
+	lam_estimates = []
+
+	# Estimate lambda.
+	for i in range(m):
+		sample = np.random.exponential(1 / lam, n)
+		x_bar = np.mean(sample)
+		lam_estimate = 1 / x_bar
+		lam_estimates.append(lam_estimate)
+
+	#Compute and print output values.
+	std_error = stats.sem(lam_estimates)
+	ci_lower = sum(lam_estimates) / len(lam_estimates) - std_error*1.645
+	ci_upper = sum(lam_estimates) / len(lam_estimates) + std_error*1.645
+	ci = ci_lower.round(3), ci_upper.round(3)
+
+	print("Standard Error: {0:.3f}".format(std_error))
+	print("Confidence Interval: {0!s}".format(ci))
+
+	# Plot a histogram of the estimates.
+	plt.hist(lam_estimates, bins=50)
+	plt.title("Histogram of lambda estimates (n=10)")
+	plt.xlabel("Estimate of lambda")
+	plt.ylabel("Frequency")
+	plt.show()
+
+simulate_sample()
+```
 
 ### Q9. [Think Stats Chapter 6 Exercise 1](statistics/6-1-household_income.md) (skewness of household income)
+
+```
+import hinc
+import numpy as np
+from scipy.stats import norm
+
+def interpolate_sample(df, log_upper=6.0):
+	"""Generate a sample of income dataframe, and take the log of income."""
+	
+	df['log_upper'] = np.log10(df.income)
+	df['log_lower'] = df.log_upper.shift(1)
+	df.loc[0, 'log_lower'] = 3.0
+	df.loc[41, 'log_upper'] = log_upper
+	
+	arrays = []
+	for item, row in df.iterrows():
+		values = np.linspace(row.log_lower, row.log_upper, row.freq)
+		arrays.append(values)
+		
+	log_sample = np.concatenate(arrays)
+	return log_sample
+
+income_df = hinc.ReadData()
+df = interpolate_sample(income_df)	
+sample = interpolate_sample(income_df)
+
+def kth_central_moment(data, k):
+	"""Returns the kth central moment of the given data set."""
+	x_bar = data.mean()
+	n = len(data)
+	x_sqd_dev = [(x - x_bar) ** k for x in data]
+	return sum(x_sqd_dev) / n
+
+def kth_standardized_moment(data, k):
+	"""Returns the kth standardized moment of the given data set."""
+	central_moment = kth_central_moment(data, k)
+	x_std = data.std()
+	return central_moment / x_std ** k
+	
+def sample_skewness(data):
+	"""Return the g1 value of the given data set."""
+	return kth_standardized_moment(data, 3)
+	
+def pearsons_skewness(data):
+	"""Return the gp value of the given data set."""
+	x_bar = data.mean()
+	median = np.median(data)
+	x_std = data.std()
+	return 3*(x_bar - median)/x_std
+
+def cdf(data, loc):
+	"""Return the CDF value for given x."""
+	counter = 0
+	for x in data:
+		if x <= loc:
+			counter += 1
+	return counter / len(data)
+
+print("Mean log income: {0:.3f}.".format(sample.mean()))
+print("Median log income: {0:.3f}.".format(np.median(sample)))
+print("Skewness of sample: {0:.3f}.".format(sample_skewness(sample)))
+print("Pearson's skewness of sample: {0:.3f}.".format(pearsons_skewness(sample)))	
+print("Proportion of sample less than the mean: {0:.3f}.".format(cdf(sample, sample.mean())))
+```
+
+*Mean log income: 4.658.
+Median log income: 4.709.
+Skewness of sample: -0.641.
+Pearson's skewness of sample: -0.338.
+Proportion of sample less than the mean: 0.451.*
+
 ### Q10. [Think Stats Chapter 8 Exercise 3](statistics/8-3-scoring.md) (scoring)
+
+```
+import numpy as np
+import matplotlib.pyplot as plt
+
+def simulate_game(goals_per_game):
+	"""Simulate a game with given parameters.  Return number of goals."""
+	lam = goals_per_game
+	time = 0
+	goals = 0
+	while time < 1:
+		waiting_time = np.random.exponential(1 / lam, 1)
+		time += waiting_time
+		if time > 1:
+			break
+		goals += 1
+	return goals
+
+def raw_moment(xs, k):
+	return sum([x**k for x in xs]) / len(xs)
+	
+def central_moment(xs, k):
+	mean = raw_moment(xs, 1)
+	return sum([(x - mean) ** k for x in xs]) / len(xs)
+
+def simulate_many_games(goals_per_game, n=10000):
+	"""
+	Simulate many games.
+	Record each estimate of lam, and return mean, mean errror, and RMSE.
+	"""
+	lam_estimates = []
+	for i in range(n):
+		lam_estimates.append(simulate_game(goals_per_game))
+	lam_estimates = np.asarray(lam_estimates)
+	L_bar = sum(lam_estimates) / n
+	rmse = central_moment(lam_estimates, 2) ** (1/2)
+	mean_error = central_moment(lam_estimates, 1)
+	return lam_estimates, rmse, mean_error
+	
+estimates, rmse, mean_error = simulate_many_games(5)
+plt.hist(estimates, width=0.9, bins=15)
+plt.title("Estimates of gpg")
+plt.xlabel("Estimate of lambda")
+plt.ylabel("Frequency")
+plt.show()
+```	
+
+*This seems to be a biased way to estimate lambda, beause the Root Mean Squared Error does not seem to approach zero as the  number of estimates increases.  The standard error remains at about 2.24, even when the number of estimates is increased by a power of ten.*
+
 ### Q11. [Think Stats Chapter 9 Exercise 2](statistics/9-2-resampling.md) (resampling)
+
+```
+import nsfg
+import thinkstats2
+import numpy as np
+
+class HypothesisTest(object):
+	def __init__(self, data):
+		self.data = data
+		self.make_model()
+		self.actual = self.test_statistic(data)
+		
+	def p_value(self, iters=1000):
+		self.test_stats = [self.test_statistic(self.run_model())
+							for _ in range(iters)]
+		count = sum([1 for x in self.test_stats if x >= self.actual])
+		return count / iters
+		
+	def test_statistic(self, data):
+		raise UnimplementedMethodException()
+	
+	def make_model(self):
+		pass
+		
+	def run_model(self):
+		raise UnimplementedMethodExcpetion()
+		
+		
+class DiffMeansPermute(HypothesisTest):
+	def test_statistic(self, data):
+		group1, group2 = data
+		test_stat = abs(group1.mean() - group2.mean())
+		return test_stat
+		
+	def make_model(self):
+		group1, group2 = self.data
+		self.n, self.m = len(group1), len(group2)
+		self.pool = np.hstack((group1, group2))
+		
+	def run_model(self):
+		np.random.shuffle(self.pool)
+		data = self.pool[:self.n], self.pool[self.n:]
+		return data
+		
+		
+class DiffMeansResample(DiffMeansPermute):
+	def run_model(self):
+		group1 = np.random.choice(self.pool, self.n, replace=True)
+		group2 = np.random.choice(self.pool, self.m, replace=True)
+		return group1, group2
+
+
+df = nsfg.ReadFemPreg()
+live = df[df.outcome == 1]
+firsts = live[live.birthord == 1]
+others = live[live.birthord != 1]
+
+# Perform hypothesis test for birth weight.
+data = firsts.totalwgt_lb, others.totalwgt_lb
+ht = DiffMeansResample(data)
+print("p-Value for birth weight hyopthesis test: {0:.3f}".format(ht.p_value()))
+
+# Perform hypothesis test for pregnancy length.
+data = firsts.prglngth, others.prglngth
+ht = DiffMeansResample(data)
+print("p-Value for preg length hyopthesis test: {0:.3f}".format(ht.p_value()))
+```
+
+*These results do not differ much from the tests performed previously in Chapter 9.  This is probably because the test of statistical significant depends on the underlying asssumptions of the null hypothesis, and what test statistic is used.  Compared with the previous model, this model simply has a different but almost equivalent implementation of computing the test statistic of the total population.  Therefore it is not surprising that this model yields similar results to the previous model; there have been no material changes to the assumptions made in the null hypothesis.*
+
+
 
 ---
 
