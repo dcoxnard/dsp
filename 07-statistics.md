@@ -69,7 +69,7 @@ Cohen's D is an example of effect size.  Other examples of effect size are:  cor
 
 You will see effect size again and again in results of algorithms that are run in data science.  For instance, in the bootcamp, when you run a regression analysis, you will recognize the t-statistic as an example of effect size.
 
-```
+```python
 import nsfg
 
 def cohens_d(group1, group2):
@@ -101,14 +101,14 @@ print("Other babies weigh {0!s} lbs on average.".format(mean_others))
 print("The Cohen's d effect size is {0:.3f} standard deviations.".format(cohens_d_babies))
 ```
 
-*Both the Cohen's d effect size and the difference between mean pregnancy length for firsts babies and other babies are very small.  This suggests that there is not a strong difference between the expected weight of a first baby, versus that of a subsequent baby.  The Cohen's d measure tells us that the mean birthweight for first babies is only a small fraction of a standard deviation away from the mean pregnancy length for other babies.*
+>> Both the Cohen's d effect size and the difference between mean pregnancy length for firsts babies and other babies are very small.  This suggests that there is not a strong difference between the expected weight of a first baby, versus that of a subsequent baby.  The Cohen's d measure tells us that the mean birthweight for first babies is only a small fraction of a standard deviation away from the mean pregnancy length for other babies.
 
 
 
 ### Q2. [Think Stats Chapter 3 Exercise 1](statistics/3-1-actual_biased.md) (actual vs. biased)
 This problem presents a robust example of actual vs biased data.  As a data scientist, it will be important to examine not only the data that is available, but also the data that may be missing but highly relevant.  You will see how the absence of this relevant data will bias a dataset, its distribution, and ultimately, its statistical interpretation.
 
-```
+```python
 import nsfg
 
 def pmf_get_mean(pmf):
@@ -147,14 +147,13 @@ print("From the sample, the mean number of kids in a household is {0:.3f}.".form
 print("If we surveyed the kids, they would report a mean of {0:.3f}.".format(biased_kid_mean))
 ```
 
-*From the sample, the mean number of kids in a household is 1.024.
-But if we surveyed the kids, they would report a mean of 2.404.*
+>> From the sample, the mean number of kids in a household is 1.024. But if we surveyed the kids, they would report a mean of 2.404.
 
 
 ### Q3. [Think Stats Chapter 4 Exercise 2](statistics/4-2-random_dist.md) (random distribution)  
 This questions asks you to examine the function that produces random numbers.  Is it really random?  A good way to test that is to examine the pmf and cdf of the list of random numbers and visualize the distribution.  If you're not sure what pmf is, read more about it in Chapter 3.  
 
-```
+```python
 import random
 import thinkstats2
 import thinkplot
@@ -174,13 +173,13 @@ thinkplot.Cdf(random_cdf)
 thinkplot.Show()
 ```
 
-*The distribution appears to be uniform.  The PMF of the distribution looks to be a "flat" bar with no peaks or troughs, meaning that all values between 0 and 1 are equally likely to be sampled.  Furthermore, the plot of the CDF is an almost straight diagonal line from the bottom of the distribution to the top.  Because no area of the CDF plot is steeper or flatter than any other area, that means that the probability of sampling any given value is about the same as the probability of sampling any other value; hence, the distribution is uniform, and the numbers are likely to be randomly chosen.*
+>> The distribution appears to be uniform.  The PMF of the distribution looks to be a "flat" bar with no peaks or troughs, meaning that all values between 0 and 1 are equally likely to be sampled.  Furthermore, the plot of the CDF is an almost straight diagonal line from the bottom of the distribution to the top.  Because no area of the CDF plot is steeper or flatter than any other area, that means that the probability of sampling any given value is about the same as the probability of sampling any other value; hence, the distribution is uniform, and the numbers are likely to be randomly chosen.
 
 
 ### Q4. [Think Stats Chapter 5 Exercise 1](statistics/5-1-blue_men.md) (normal distribution of blue men)
 This is a classic example of hypothesis testing using the normal distribution.  The effect size used here is the Z-statistic. 
 
-```
+```python
 from scipy.stats import norm
 
 mean = 178
@@ -198,7 +197,7 @@ print("{0:.1f}% of the US male population is between 5'10\" and 6'1\",\
  and therefore eligible to join the\
  Blue Man Group.".format(perc_in_range))
 ```
-*34.2% of the US male population is between 5'10" and 6'1", and therefore eligible to join the Blue Man Group.*
+>> 34.2% of the US male population is between 5'10" and 6'1", and therefore eligible to join the Blue Man Group.
 
 ### Q5. Bayesian (Elvis Presley twin) 
 
@@ -224,7 +223,7 @@ The following exercises are optional, but we highly encourage you to complete th
 ### Q7. [Think Stats Chapter 7 Exercise 1](statistics/7-1-weight_vs_age.md) (correlation of weight vs. age)
 In this exercise, you will compute the effect size of correlation.  Correlation measures the relationship of two variables, and data science is about exploring relationships in data.    
 
-```
+```python
 import matplotlib.pyplot as plt
 import nsfg
 import numpy as np
@@ -285,11 +284,12 @@ spearmans_corr = spearmans_corr(live.totalwgt_lb, live.agepreg)
 print("Spearman's Correlation Coefficient: {0:.3f}".format(spearmans_corr))
 ```
 
-*Both correlation coefficients are very low.  This is evidence that the mother's age at birth and birthweight are not meaningfully related.  In other words, knowing information about one variable does not give much, if any, predictive power on the other variable.  Because both correlation coefficients are below 0.1, it is safe to conclude that each variable explains less than a tenth of the variation in the other variable.*
+>> Both correlation coefficients are very low.  This is evidence that the mother's age at birth and birthweight are not meaningfully related.  In other words, knowing information about one variable does not give much, if any, predictive power on the other variable.  Because both correlation coefficients are below 0.1, it is safe to conclude that each variable explains less than a tenth of the variation in the other variable.
 
 ### Q8. [Think Stats Chapter 8 Exercise 2](statistics/8-2-sampling_dist.md) (sampling distribution)
 In the theoretical world, all data related to an experiment or a scientific problem would be available.  In the real world, some subset of that data is available.  This exercise asks you to take samples from an exponential distribution and examine how the standard error and confidence intervals vary with the sample size.
-```
+
+```python
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -327,7 +327,7 @@ simulate_sample()
 
 ### Q9. [Think Stats Chapter 6 Exercise 1](statistics/6-1-household_income.md) (skewness of household income)
 
-```
+```python
 import hinc
 import numpy as np
 from scipy.stats import norm
@@ -399,7 +399,7 @@ Proportion of sample less than the mean: 0.451.*
 
 ### Q10. [Think Stats Chapter 8 Exercise 3](statistics/8-3-scoring.md) (scoring)
 
-```
+```python
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -445,11 +445,11 @@ plt.ylabel("Frequency")
 plt.show()
 ```	
 
-*This seems to be a biased way to estimate lambda, beause the Root Mean Squared Error does not seem to approach zero as the  number of estimates increases.  The standard error remains at about 2.24, even when the number of estimates is increased by a power of ten.*
+>> This seems to be a biased way to estimate lambda, beause the Root Mean Squared Error does not seem to approach zero as the  number of estimates increases.  The standard error remains at about 2.24, even when the number of estimates is increased by a power of ten.
 
 ### Q11. [Think Stats Chapter 9 Exercise 2](statistics/9-2-resampling.md) (resampling)
 
-```
+```python
 import nsfg
 import thinkstats2
 import numpy as np
@@ -516,7 +516,7 @@ ht = DiffMeansResample(data)
 print("p-Value for preg length hyopthesis test: {0:.3f}".format(ht.p_value()))
 ```
 
-*These results do not differ much from the tests performed previously in Chapter 9.  This is probably because the test of statistical significant depends on the underlying asssumptions of the null hypothesis, and what test statistic is used.  Compared with the previous model, this model simply has a different but almost equivalent implementation of computing the test statistic of the total population.  Therefore it is not surprising that this model yields similar results to the previous model; there have been no material changes to the assumptions made in the null hypothesis.*
+>> These results do not differ much from the tests performed previously in Chapter 9.  This is probably because the test of statistical significant depends on the underlying asssumptions of the null hypothesis, and what test statistic is used.  Compared with the previous model, this model simply has a different but almost equivalent implementation of computing the test statistic of the total population.  Therefore it is not surprising that this model yields similar results to the previous model; there have been no material changes to the assumptions made in the null hypothesis.
 
 
 
