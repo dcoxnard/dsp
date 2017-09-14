@@ -101,12 +101,55 @@ print("Other babies weigh {0!s} lbs on average.".format(mean_others))
 print("The Cohen's d effect size is {0:.3f} standard deviations.".format(cohens_d_babies))
 ```
 
-Both the Cohen's d effect size and the difference between mean pregnancy length for firsts babies and other babies are very small.  This suggests that there is not a strong difference between the expected weight of a first baby, versus that of a subsequent baby.  The Cohen's d measure tells us that the mean birthweight for first babies is only a small fraction of a standard deviation away from the mean pregnancy length for other babies.
+*Both the Cohen's d effect size and the difference between mean pregnancy length for firsts babies and other babies are very small.  This suggests that there is not a strong difference between the expected weight of a first baby, versus that of a subsequent baby.  The Cohen's d measure tells us that the mean birthweight for first babies is only a small fraction of a standard deviation away from the mean pregnancy length for other babies.*
 
 
 
 ### Q2. [Think Stats Chapter 3 Exercise 1](statistics/3-1-actual_biased.md) (actual vs. biased)
 This problem presents a robust example of actual vs biased data.  As a data scientist, it will be important to examine not only the data that is available, but also the data that may be missing but highly relevant.  You will see how the absence of this relevant data will bias a dataset, its distribution, and ultimately, its statistical interpretation.
+
+```
+import nsfg
+
+def pmf_get_mean(pmf):
+	"""This function takes a PMF (frequency dictionary) and returns the mean."""
+	mean = 0
+	total_count = sum(pmf.values())
+	for value, frequency in pmf.items():
+		mean += (frequency / total_count) * value
+	return mean
+
+# Read the data into a histogram dictionary.
+df = nsfg.ReadFemResp()
+kid_hist = {}
+for response in df.numkdhh:
+	kid_hist[response] = kid_hist.get(response, 0) + 1
+
+# Create PMF dictionary of the data.
+true_kid_pmf = {}
+n = sum(kid_hist.values())
+for number_kids, freq in kid_hist.items():
+	true_kid_pmf[number_kids] = freq / n
+
+# Bias the PMF:
+## What responses would we get if we got family size by interviewing the kids?
+biased_kid_pmf = {}
+for k, v in kid_hist.items():
+	biased_kid_pmf[k] = v
+for number_kids, freq in biased_kid_pmf.items():
+	biased_kid_pmf[number_kids] *= (number_kids / n)
+
+# Calculate means of PMFs and print findings.
+true_kid_mean = pmf_get_mean(true_kid_pmf)
+biased_kid_mean = pmf_get_mean(biased_kid_pmf)
+
+print("From the sample, the mean number of kids in a household is {0:.3f}.".format(true_kid_mean))
+print("If we surveyed the kids, they would report a mean of {0:.3f}.".format(biased_kid_mean))
+```
+
+*From the sample, the mean number of kids in a household is 1.024.
+But if we surveyed the kids, they would report a mean of 2.404.*
+
 
 ### Q3. [Think Stats Chapter 4 Exercise 2](statistics/4-2-random_dist.md) (random distribution)  
 This questions asks you to examine the function that produces random numbers.  Is it really random?  A good way to test that is to examine the pmf and cdf of the list of random numbers and visualize the distribution.  If you're not sure what pmf is, read more about it in Chapter 3.  
