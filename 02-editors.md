@@ -89,6 +89,6 @@ What terminal editor will be your preferred choice of use? How did you make your
 
 What graphical editor will you use? How did you make your decision? What are some interesting features of your editor? What are some useful keyboard shortcuts for your editor? How do you customize your editor?
 
->> I decided that I will use Spyder as my graphical editor.
+>> I decided that I will use Spyder as my graphical editor.  I especially like the object lookup and syntax coloring.  I decided on Spyder since it is the out-of-the-box IDE with Anaconda.
 
  
