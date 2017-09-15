@@ -35,15 +35,15 @@ Make a cheat sheet for yourself: a list of at least **ten** commands and what th
 ### Q2.  List Files in Unix   
 
 What do the following commands do:  
-`ls`  list what's in the current directory
-`ls -a`  list hidden files
-`ls -l`  list the contents of the directory in long form, with permissions
-`ls -lh`  list directory with human readable file size
-`ls -lah` combo of the above: list hidden files with human readable form
-`ls -t`  list directory sorted by time and date
-`ls -Glp`  colorized output, long form, and write a slash '/' if a directory
 
-> > REPLACE THIS TEXT WITH YOUR RESPONSE
+* `ls`  list what's in the current directory
+* `ls -a`  list hidden files
+* `ls -l`  list the contents of the directory in long form, with permissions
+* `ls -lh`  list directory with human readable file size
+* `ls -lah` combo of the above: list hidden files with human readable form
+* `ls -t`  list directory sorted by time and date
+* `ls -Glp`  colorized output, long form, and write a slash '/' if a directory
+
 
 ---
 
@@ -51,11 +51,11 @@ What do the following commands do:
 
 Explore these other [ls options](http://www.techonthenet.com/unix/basic/ls.php) and pick 5 of your favorites:
 
-`ls -C` multi-column output
-`ls -c` sort by time last modified
-`ls -i` print file's serial number
-`ls -m` separate files by comma (stream files)
-`ls -R` recursively list subdirectories found
+* `ls -C` multi-column output
+* `ls -c` sort by time last modified
+* `ls -i` print file's serial number
+* `ls -m` separate files by comma (stream files)
+* `ls -R` recursively list subdirectories found
 
 ---
 
