@@ -19,22 +19,29 @@ Here's a list of items with which you should be familiar:
 
 Make a cheat sheet for yourself: a list of at least **ten** commands and what they do.  (Use the 8 items above and add a couple of your own.)  
 
-> > ls: list what's in the current directory
-> > cd: change working directory
-> > pwd: print working directory
+`ls` list what's in the current directory
+`cd` change working directory
+`pwd` print working directory
+`rmdir` delete a directory
+`touch path/file.ext` create a file with the stated path
+`rm` delete file
+`mv` rename file
+`cp` copy file
+`ls -a` list hidden files
+`xargs` execute arguments
 
 ---
 
 ### Q2.  List Files in Unix   
 
 What do the following commands do:  
-`ls`  
-`ls -a`  
-`ls -l`  
-`ls -lh`  
-`ls -lah`  
-`ls -t`  
-`ls -Glp`  
+`ls`  list what's in the current directory
+`ls -a`  list hidden files
+`ls -l`  list the contents of the directory in long form, with permissions
+`ls -lh`  list directory with human readable file size
+`ls -lah` combo of the above: list hidden files with human readable form
+`ls -t`  list directory sorted by time and date
+`ls -Glp`  colorized output, long form, and write a slash '/' if a directory
 
 > > REPLACE THIS TEXT WITH YOUR RESPONSE
 
@@ -44,7 +51,11 @@ What do the following commands do:
 
 Explore these other [ls options](http://www.techonthenet.com/unix/basic/ls.php) and pick 5 of your favorites:
 
-> > REPLACE THIS TEXT WITH YOUR RESPONSE
+`ls -C` multi-column output
+`ls -c` sort by time last modified
+`ls -i` print file's serial number
+`ls -m` separate files by comma (stream files)
+`ls -R` recursively list subdirectories found
 
 ---
 
@@ -52,7 +63,6 @@ Explore these other [ls options](http://www.techonthenet.com/unix/basic/ls.php) 
 
 What does `xargs` do? Give an example of how to use it.
 
-> > REPLACE THIS TEXT WITH YOUR RESPONSE
-
+> > `xargs` is a way to pass arguments to a command.  This is useful if you have many inputs for the command, because instead of calling the command once for each input, you can use `xargs` to tell the command to run against each input that you specify.
  
 
